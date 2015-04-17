@@ -319,6 +319,9 @@ void mangoSM__HTTP_SENDING_HEADERS(mangoEvent_e event, mangoHttpClient_t* hc){
                             mangoSM_EXITERR(MANGO_ERR_INVALIDHEADERS, hc);
 							mangoSM_ENTER(mangoSM__ABORTED, hc);
                         }
+                        
+                        MANGO_DBG(MANGO_DBG_LEVEL_SM, ("Attaching Raw ODP\r\n") );
+                        
 						hc->ODPArgsRaw.fileSzProcessed = 0;
 						hc->dataProcessorArgs = &hc->ODPArgsRaw;
 						
@@ -342,6 +345,8 @@ void mangoSM__HTTP_SENDING_HEADERS(mangoEvent_e event, mangoHttpClient_t* hc){
 							mangoSM_ENTER(mangoSM__ABORTED, hc);
 						}
 						
+                        MANGO_DBG(MANGO_DBG_LEVEL_SM, ("Attaching Chunked ODP\r\n") );
+                        
 						hc->outputDataProcessor = mangoODP_chunked;
 						hc->ODPArgsChunked.workingBuffer = MANGO_WB_PTR(hc);
 						hc->ODPArgsChunked.workingBufferSz = MANGO_WB_TOT_SZ(hc);
