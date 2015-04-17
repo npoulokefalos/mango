@@ -44,6 +44,9 @@
 #include <fcntl.h>
 #include <errno.h>
 
+/**
+ * @brief   Get the current timestamp in miliseconds
+ */
 uint32_t mangoPort_timeNow(){
     struct timeval  tv;
 	gettimeofday(&tv, NULL);
@@ -51,22 +54,38 @@ uint32_t mangoPort_timeNow(){
     return  (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
 }
 
+/**
+ * @brief   Sleep for the specified number of miliseconds
+ */
 void mangoPort_sleep(uint32_t ms){
     usleep(ms * 1000);
 }
 
+/**
+ * @brief   Alocate "sz" bytes from heap
+ */
 void* mangoPort_malloc(uint32_t sz){
     return malloc(sz);
 }
 
+/**
+ * @brief   Free the specific memory block
+ */
 void mangoPort_free(void* ptr){
     free(ptr);
 }
 
-/*
-* < 0 connection error
-* >=0 connection OK, data were received
-*/
+
+/**
+ * @brief   Read at most "datalen" bytes from the specified socket. Wait until at least 
+ *          1 byte has been read or until the "timeout" [miliseconds] expires.
+ *          NOTE: The function should return on the first succesfull read operation,
+ *          even if the number of bytes read was not equal to "datalen".
+ *
+ * @retval  >= 0    The number of bytes read. 
+ * @retval  < 0     Indicates connection error. In this case the function should return
+ *                  even if the timeout has not been expired.
+ */
 int mangoPort_read(int socketfd, uint8_t* data, uint16_t datalen, uint32_t timeout){
     uint32_t received;
     uint32_t start;
@@ -109,10 +128,20 @@ int mangoPort_read(int socketfd, uint8_t* data, uint16_t datalen, uint32_t timeo
 	return retval;
 }
 
-/*
-* < 0 connection error
-* >=0 connection OK, data were sent
-*/
+
+/**
+ * @brief   Write exactly "datalen" bytes to the specified socket. Wait until all data 
+ *          have been sent or until the "timeout" [miliseconds] expires. If the timeout 
+ *          expires and not ALL data have been sent, mango will consider the connection 
+ *          closed, even if the function didn't return a value < 0.
+ *          Check MANGO_SOCKET_WRITE_TIMEOUT_MS definition for the default timeout
+ *          value.
+ *
+ * @retval  >= 0    The number of bytes sent. If this number is not equal to "datalen"
+ *                  mango will consider the connection closed.
+ * @retval  < 0     Indicates connection error. In this case the function should return
+ *                  even if the timeout has not been expired.
+ */
 int mangoPort_write(int socketfd, uint8_t* data, uint16_t datalen, uint32_t timeout){
     uint32_t sent;
     uint32_t start;
@@ -150,10 +179,23 @@ int mangoPort_write(int socketfd, uint8_t* data, uint16_t datalen, uint32_t time
     return sent;
 }
 
+/**
+ * @brief   Close the connection with the specific socket ID
+ */
 void mangoPort_disconnect(int socketfd){
 	close(socketfd);
 }
 
+
+/**
+ * @brief   Connect to the specified IP address and port. Wait until at least 
+ *          for at most "timeout" [miliseconds] until the connection is established,
+ *          else abort.
+ *
+ * @retval  >= 0    The connection was succesfull and the return value indicates the 
+ *                  socket ID.
+ * @retval  < 0     Connection failed.
+ */
 int mangoPort_connect(char* serverIP, uint16_t serverPort, uint32_t timeout){
     int retval;
     struct sockaddr_in s_addr_in;
