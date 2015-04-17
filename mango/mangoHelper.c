@@ -218,8 +218,22 @@ void mangoHelper_dec2hexstr(uint32_t dec, char hexbuf[9]){
  * @brief   Converts a DEC integer to DEC string
  * @return  0 on success, <0 on error
  */
-void mangoHelper_dec2decstr(uint32_t dec, char decbuf[9]){
-	sprintf(decbuf,"%u", dec);
+void mangoHelper_dec2decstr(uint32_t dec, char decbuf[11]){
+    char const digit[] = "0123456789";
+    char* p = decbuf;
+    uint32_t shifter;
+    
+    shifter = dec;
+    do{
+        ++p;
+        shifter = shifter/10;
+    }while(shifter);
+    
+    *p = '\0';
+    do{
+        *--p = digit[dec%10];
+        dec = dec/10;
+    }while(dec);
 }
 
 /**
