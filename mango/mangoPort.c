@@ -194,7 +194,7 @@ void mangoPort_disconnect(int socketfd){
  *
  * @retval  >= 0    The connection was succesfull and the return value indicates the 
  *                  socket ID.
- * @retval  < 0     Connection failed.
+ * @retval  < 0     Connection failed. 
  */
 int mangoPort_connect(char* serverIP, uint16_t serverPort, uint32_t timeout){
     int retval;
