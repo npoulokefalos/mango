@@ -68,6 +68,7 @@ uint32_t    mangoHelper_elapsedTime(uint32_t starttime);
 void        mangoHelper_dec2hexstr(uint32_t dec, char hexbuf[9]);
 int         mangoHelper_hexstr2dec(char* hexstr, uint32_t* dec);
 int         mangoHelper_decstr2dec(char* decstr, uint32_t* dec);
+void        mangoHelper_dec2decstr(uint32_t dec, char decbuf[11]);
 
 /* **********************************************************************************************************************
 * Crypto function declarations

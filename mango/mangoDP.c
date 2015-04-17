@@ -350,6 +350,8 @@ mangoErr_t mangoODP_chunked(mangoHttpClient_t* hc, uint8_t* buf, uint16_t buflen
 			mangoHelper_dec2hexstr(sendSz, (char*) args->workingBuffer);
 			chunkLen = strlen((char*)args->workingBuffer);
 			
+            //MANGO_DBG(MANGO_DBG_LEVEL_DP, ("Chunk size @HEX = '%s'\r\n", args->workingBuffer) );
+            
 			/* CRLF */
 			memcpy(&args->workingBuffer[chunkLen], "\r\n", strlen("\r\n"));		
 			chunkLen += 2;
@@ -362,6 +364,10 @@ mangoErr_t mangoODP_chunked(mangoHttpClient_t* hc, uint8_t* buf, uint16_t buflen
 			memcpy(&args->workingBuffer[chunkLen], "\r\n", strlen("\r\n"));		
 			chunkLen += 2;
 			
+            args->workingBuffer[chunkLen] = '\0';
+            
+            //MANGO_DBG(MANGO_DBG_LEVEL_DP, ("Sending '%s', len = %u\r\n", args->workingBuffer, chunkLen) );
+            
 			/* Send the chunk */
 			//retval = mangoPort_write(hc->socketfd, args->workingBuffer, chunkLen, MANGO_SOCKET_WRITE_TIMEOUT_MS);
             retval = mangoSocket_write(hc, args->workingBuffer, chunkLen, MANGO_SOCKET_WRITE_TIMEOUT_MS);
