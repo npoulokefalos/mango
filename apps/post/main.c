@@ -44,7 +44,7 @@
 /*
 * Defines the size of the virtual file to be posted
 */
-#define FILE_SZ             (15 * 1024)
+#define FILE_SZ             (1 * 1024)
 
 /*
 * Define this to do a chunked POST
@@ -200,7 +200,7 @@ mangoErr_t httpPost(mangoHttpClient_t* httpClient){
     * buffer NULL and buflen 0 should be made. This will notify the internal State machine
     * that all data have been sent and the application is ready to accept the HTTP response.
     */
-    mangoHelper_dec2decstr(FILE_SZ, &fileSz);
+    mangoHelper_dec2decstr(FILE_SZ, fileSz);
     err = mango_httpHeaderSet(httpClient, MANGO_HDR__CONTENT_LENGTH, fileSz);
     if(err != MANGO_OK){ return MANGO_ERR; }
 #endif
