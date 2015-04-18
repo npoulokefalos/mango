@@ -70,10 +70,47 @@ typedef enum{
     */
     
 	MANGO_ERR_HTTP_100 = 100,	        /* Expectation was succesfull, continue with the data */
-	MANGO_ERR_HTTP_101 = 101,	        /* Websocket upgrade */
-	MANGO_ERR_HTTP_200 = 200,           /* Success */
-	MANGO_ERR_HTTP_206 = 206,           /* Partial content */
-	
+	MANGO_ERR_HTTP_101 = 101,	        /* Switching Protocols */
+
+    
+    MANGO_ERR_HTTP_200 = 200,           /* OK */
+    MANGO_ERR_HTTP_201 = 201,           /* Created */
+    MANGO_ERR_HTTP_202 = 202,           /* Accepted */
+    MANGO_ERR_HTTP_203 = 203,           /* Non-Authoritative Information */
+	MANGO_ERR_HTTP_204 = 204,           /* No Content */
+    MANGO_ERR_HTTP_205 = 205,           /* Reset Content */
+    MANGO_ERR_HTTP_206 = 206,           /* Partial content */
+
+	MANGO_ERR_HTTP_300 = 300,           /* Multiple Choices */
+    MANGO_ERR_HTTP_301 = 301,           /* Moved Permanently */
+    MANGO_ERR_HTTP_302 = 302,           /* Found */
+    MANGO_ERR_HTTP_303 = 303,           /* See Other  */
+    MANGO_ERR_HTTP_304 = 304,           /* Not Modified */
+    MANGO_ERR_HTTP_305 = 305,           /* Use Proxy */
+    MANGO_ERR_HTTP_306 = 306,           /* Switch Proxy */
+    MANGO_ERR_HTTP_307 = 307,           /* Temporary Redirect  */
+    MANGO_ERR_HTTP_308 = 308,           /*  Permanent Redirect */
+    
+    MANGO_ERR_HTTP_400 = 400,           /* Bad Request */
+    MANGO_ERR_HTTP_401 = 401,           /* Unauthorized */
+    MANGO_ERR_HTTP_403 = 403,           /* Forbidden */
+    MANGO_ERR_HTTP_404 = 404,           /* Not Found */
+    MANGO_ERR_HTTP_405 = 405,           /* Method Not Allowed */
+    MANGO_ERR_HTTP_406 = 406,           /* Not Acceptable */
+    MANGO_ERR_HTTP_407 = 407,           /* Proxy Authentication Required */
+    MANGO_ERR_HTTP_408 = 408,           /* Request Timeout */
+    MANGO_ERR_HTTP_409 = 409,           /* Conflict */
+    MANGO_ERR_HTTP_410 = 410,           /* Gone */
+    MANGO_ERR_HTTP_411 = 411,           /* Length Required */
+    MANGO_ERR_HTTP_412 = 412,           /* Precondition Failed */
+    MANGO_ERR_HTTP_413 = 413,           /* Request Entity Too Large */
+    MANGO_ERR_HTTP_414 = 414,           /* Request-URI Too Long */
+    MANGO_ERR_HTTP_415 = 415,           /* Unsupported Media Type */
+    MANGO_ERR_HTTP_416 = 416,           /* Requested Range Not Satisfiable */
+    MANGO_ERR_HTTP_417 = 417,           /* Expectation Failed */
+    MANGO_ERR_HTTP_426 = 426,           /* Upgrade Required */
+    MANGO_ERR_HTTP_429 = 429,           /* Too Many Requests */
+    
 	MANGO_ERR_HTTP_599 = 599,
 }mangoErr_t;
 
