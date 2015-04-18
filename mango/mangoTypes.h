@@ -51,17 +51,17 @@ typedef enum{
     */
     
     MANGO_ERR_CONNECTION,               /* The connection was closed */
-    MANGO_ERR_ABORTED,                  /* The operation was aborted due to parsing error or user action */
+    MANGO_ERR_ABORTED,                  /* The operation was aborted due to parsing error */
 	MANGO_ERR_APICALLNOTSUPPORTED,      /* The current status of the connection does not permit the specific API call */
-	MANGO_ERR_INVALIDHEADERS,           /* Failed to get the value of an HTTP header */
+	MANGO_ERR_INVALIDREQHEADERS,		/* Application provided conflicting/invalid HTTP Request headers */
 	MANGO_ERR_RESPTIMEOUT,              /* HTTP Response timeout reached [MANGO_HTTP_RESPONSE_TIMEOUT_MS] */
-    MANGO_ERR_RESPFORMAT,               /* The response format is not supported */
+    MANGO_ERR_RESPFORMAT,               /* The HTTP response format is not supported */
     MANGO_ERR_DATAPROCESSING,           /* An error occured during the processing of an input/output data stream */
     MANGO_ERR_WORKBUFSMALL,             /* The working buffer was small and the operation could not be completed [MANGO_WORKING_BUFFER_SZ] */
 	MANGO_ERR_CONTENTLENGTH,            /* User provided more or less data during a POST/PUT request (relative to the specified Content-Length header) */
 	MANGO_ERR_WRITETIMEOUT,             /* The maximum timeout for a write operation reached, connection is considered closed [MANGO_SOCKET_WRITE_TIMEOUT_MS] */
     MANGO_ERR_TEMPBUFSMALL,             /* The temporary buffer used was not enough for a specific operation */
-    MANGO_ERR_APPABORTED,               /* Application aborted the connection */
+    MANGO_ERR_APPABORTED,               /* Application aborted the connection [for esxample by returning MANGO_ERR from the app callback] */
     MANGO_ERR_MOREDATANEEDED,           /* Data processor needs more data to continue */
     MANGO_ERR_WEBSOCKETCLOSED,          /* For websockets, it indicates that the remote peer sent a close packet and the connection is considered closed */
 	
