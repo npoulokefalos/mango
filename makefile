@@ -26,4 +26,3 @@ MANGO_SRC = \
 
 all:
 	gcc -Wall -I mango apps/$(MANGO_APP)/main.c $(MANGO_SRC)
-	size a.out
