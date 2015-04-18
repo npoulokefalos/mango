@@ -61,6 +61,8 @@
 mangoErr_t mangoApp_handler(mangoArg_t* mangoArgs, void* userArgs){
 	mangoErr_t err;
     
+    (void) err;
+    
 	switch(mangoArgs->argType){
 		case MANGO_ARG_TYPE_HTTP_REQUEST_READY:
         {
@@ -165,7 +167,8 @@ mangoErr_t httpPost(mangoHttpClient_t* httpClient){
     char fileSz[11];
     uint32_t sent, sendnow;
     
-
+    (void) fileSz;
+    
     err = mango_httpRequestNew(httpClient, "/post.php",  MANGO_HTTP_METHOD_POST);
     if(err != MANGO_OK){ return MANGO_ERR; }
     
