@@ -111,6 +111,11 @@ typedef enum{
     MANGO_ERR_HTTP_426 = 426,           /* Upgrade Required */
     MANGO_ERR_HTTP_429 = 429,           /* Too Many Requests */
     
+    MANGO_ERR_HTTP_500 = 500,           /* Internal Server Error */
+    MANGO_ERR_HTTP_501 = 501,           /* Not Implemented */
+    MANGO_ERR_HTTP_503 = 503,           /* Service Unavailable */
+    MANGO_ERR_HTTP_505 = 505,           /* HTTP Version Not Supported */
+    
 	MANGO_ERR_HTTP_599 = 599,
 }mangoErr_t;
 
