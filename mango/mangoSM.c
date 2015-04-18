@@ -316,7 +316,7 @@ void mangoSM__HTTP_SENDING_HEADERS(mangoEvent_e event, mangoHttpClient_t* hc){
 						/* Normal PUT/POST */
 						hc->outputDataProcessor = mangoODP_raw;
                         if(mangoHelper_decstr2dec(headerValueBuf, &hc->ODPArgsRaw.fileSz)){
-                            mangoSM_EXITERR(MANGO_ERR_INVALIDHEADERS, hc);
+                            mangoSM_EXITERR(MANGO_ERR_INVALIDREQHEADERS, hc);
 							mangoSM_ENTER(mangoSM__ABORTED, hc);
                         }
                         
@@ -341,7 +341,8 @@ void mangoSM__HTTP_SENDING_HEADERS(mangoEvent_e event, mangoHttpClient_t* hc){
 					}else{
 						/* Chunked PUT/POST */
 						if(hc->outputDataProcessor){
-							mangoSM_EXITERR(MANGO_ERR_INVALIDHEADERS, hc);
+							/* User has provided both "Content-Length" & "Transfer-Encoding" HTTP Headers */
+							mangoSM_EXITERR(MANGO_ERR_INVALIDREQHEADERS, hc);
 							mangoSM_ENTER(mangoSM__ABORTED, hc);
 						}
 						
@@ -357,7 +358,8 @@ void mangoSM__HTTP_SENDING_HEADERS(mangoEvent_e event, mangoHttpClient_t* hc){
 					* Verify that request's headers resulted to one ODP
 					*/
 					if(!hc->outputDataProcessor){
-						mangoSM_EXITERR(MANGO_ERR_INVALIDHEADERS, hc);
+						/* HTTP request has not the "Content-Length" or the "Transfer-Encoding" HTTP Header */
+						mangoSM_EXITERR(MANGO_ERR_INVALIDREQHEADERS, hc);
 						mangoSM_ENTER(mangoSM__ABORTED, hc);
 					}
 					
@@ -486,7 +488,7 @@ void mangoSM__HTTP_RECVING_HEADERS(mangoEvent_e event, mangoHttpClient_t* hc){
 					hc->inputDataProcessor = mangoIDP_raw;
                     if(mangoHelper_decstr2dec(headerValueBuf, &hc->IDPArgsRaw.fileSz)){
                         MANGO_DBG(MANGO_DBG_LEVEL_SM, ("CONTENT LENGTH ERROR!\r\n") );
-                        mangoSM_EXITERR(MANGO_ERR_INVALIDHEADERS, hc);
+                        mangoSM_EXITERR(MANGO_ERR_RESPFORMAT, hc);
                         mangoSM_ENTER(mangoSM__ABORTED, hc);
                     }
                     
