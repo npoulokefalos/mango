@@ -80,11 +80,12 @@ void mangoPort_free(void* ptr){
  * @brief   Read at most "datalen" bytes from the specified socket. Wait until at least 
  *          1 byte has been read or until the "timeout" [miliseconds] expires.
  *          NOTE: The function should return on the first succesfull read operation,
- *          even if the number of bytes read was not equal to "datalen".
+ *          even if the number of bytes read was smaller not equal to "datalen". "buflen"
+ *          only defines the mamixum number of bytes that should be read.
  *
- * @retval  >= 0    The number of bytes read. 
+ * @retval  >= 0    The number of bytes read. 0 means timeout happend and no bytes were read.
  * @retval  < 0     Indicates connection error. In this case the function should return
- *                  even if the timeout has not been expired.
+ *                  even if the timeout has not been expired. mango will return with an error.
  */
 int mangoPort_read(int socketfd, uint8_t* data, uint16_t datalen, uint32_t timeout){
     uint32_t received;
@@ -106,7 +107,7 @@ int mangoPort_read(int socketfd, uint8_t* data, uint16_t datalen, uint32_t timeo
             //retval = getsockopt(socketfd, SOL_SOCKET, SO_ERROR, &socketerror, (socklen_t *) &socketerrorlen);
             socketerror = errno;
             
-            MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("READ SOCKET ERROR %d\r\n", socketerror) );
+            MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("!!!!!!! READ SOCKET ERROR %d\r\n", socketerror) );
             
             if(socketerror == EWOULDBLOCK || socketerror == EAGAIN){
                 mangoPort_sleep(64);
@@ -149,7 +150,7 @@ int mangoPort_write(int socketfd, uint8_t* data, uint16_t datalen, uint32_t time
     //socklen_t socketerrorlen;
     int retval;
     
-	MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("Trying to write %u bytes [%s]\r\n", datalen, data) );
+	MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("Trying to write %u bytes\r\n", datalen) );
 	
     sent = 0;
     start = mangoPort_timeNow();
@@ -160,7 +161,7 @@ int mangoPort_write(int socketfd, uint8_t* data, uint16_t datalen, uint32_t time
             //retval = getsockopt(socketfd, SOL_SOCKET, SO_ERROR, &socketerror, (socklen_t *) &socketerrorlen);
             socketerror = errno;
             
-            MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("WRITE SOCKET ERROR %d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\r\n", socketerror) );
+            MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("!!!!!!! WRITE SOCKET ERROR %d\r\n", socketerror) );
             
             if(socketerror == EWOULDBLOCK || socketerror == EAGAIN){
                 mangoPort_sleep(64);
