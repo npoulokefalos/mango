@@ -30,10 +30,9 @@
 /*
 *   Select logging mask
 */
-#define MANGO_DBG_LEVEL_SM          MANGO_DBG_ON
-#define MANGO_DBG_LEVEL_DP          MANGO_DBG_ON
-#define MANGO_DBG_LEVEL_APP         MANGO_DBG_ON
-#define MANGO_DBG_LEVEL_WS          MANGO_DBG_ON
+#define MANGO_DBG_LEVEL_SM          MANGO_DBG_OFF
+#define MANGO_DBG_LEVEL_DP          MANGO_DBG_OFF
+#define MANGO_DBG_LEVEL_WS          MANGO_DBG_OFF
 #define MANGO_DBG_LEVEL_PORT        MANGO_DBG_OFF
 
 
