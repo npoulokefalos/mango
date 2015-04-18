@@ -52,37 +52,28 @@ mangoErr_t mangoSM_PROCESS(mangoHttpClient_t* hc, mangoEvent_e event){
     */
     mangoSM_EXITERR(MANGO_OK, hc);
     
-	/*
-	* Register the API call we are currently executing
-	*/
-	hc->smAPICall = event;
-	
     /*
-    * User wants to perform a new request
+    * Trigger event subscription
     */
     mangoSM_THROW(event, hc);
 
     /*
     * Start processing the SM
     */
-    //startTime = mangoPort_timeNow();
-	//hc->smTimeout = hc->smReadTimeout
     while(forever){
 
 		/*
-        * Calculate the timeout of the event
+        * Check for state timeout
         */
 		if(hc->smTimeout != MANGO_TIMEOUT_INFINITE){
 			elapsedTime = mangoHelper_elapsedTime(hc->smEntryTimestamp);
 			if(elapsedTime >= hc->smTimeout){
 				mangoSM_THROW(EVENT_TIMEOUT, hc);
-				//continue;
 			}else{
 				hc->smEventTimeout = hc->smTimeout - elapsedTime;
 			}
 		}
 		
-
         switch(hc->subscribedEvent){
             case EVENT_READ:
                 mangoSM_THROW(EVENT_READ, hc);
@@ -129,21 +120,13 @@ void mangoSM_SUBSCRIBE(mangoEvent_e event, mangoHttpClient_t* hc){
 }
 
 void mangoSM_THROW(mangoEvent_e event, mangoHttpClient_t* hc){
-	//MANGO_DBG("+++++++++++\r\n");
     hc->curState(event, hc);
-	//MANGO_DBG("+++++++++++\r\n");
     while(hc->nxtState != hc->curState){
-		//MANGO_DBG("+++++++++++\r\n");
         hc->curState        = hc->nxtState;
-		//MANGO_DBG("+++++++++++\r\n");
         hc->subscribedEvent = EVENT_NONE;
 		hc->smTimeout		= MANGO_TIMEOUT_INFINITE;
 		hc->smEntryTimestamp= mangoPort_timeNow();
-		//hc->smTimeout
-        //mangoSM_TIMEOUT(MANGO_TIMEOUT_MS);
-		//MANGO_DBG("1 #################\r\n");
         hc->curState(EVENT_ENTRY, hc);
-		//MANGO_DBG("2 #################\r\n");
     }
 }
 
@@ -163,7 +146,7 @@ void mangoSM__ABORTED(mangoEvent_e event, mangoHttpClient_t* hc){
 	switch(event){
 		case EVENT_ENTRY:
             /*
-            * State machine is going to exit as we do not subsribe to any event
+            * State machine is going to exit as we do not subsribe to any events
             */
 			break;
         case EVENT_APICALL_httpRequestProcess:
@@ -172,7 +155,7 @@ void mangoSM__ABORTED(mangoEvent_e event, mangoHttpClient_t* hc){
 		case EVENT_APICALL_wsFrameSend:
 		case EVENT_APICALL_wsClose:
             /*
-            * State machine is going to exit as we do not subsribe to any event
+            * State machine is going to exit as we do not subsribe to any events
             */
             mangoSM_EXITERR(MANGO_ERR_ABORTED, hc);
 			break;
@@ -214,7 +197,7 @@ void mangoSM__HTTP_CONNECTED(mangoEvent_e event, mangoHttpClient_t* hc){
 		case EVENT_ENTRY:
             /*
             * State machine is going to exit as we do not subsribe to any event.
-			* We also clear the working buffer so we can start new HTTP requests
+			* We also clear the working buffer so we can execute new HTTP requests
             */
             hc->workingBufferIndexLeft = 0;
             hc->workingBufferIndexRight = 0;
@@ -518,7 +501,7 @@ void mangoSM__HTTP_RECVING_HEADERS(mangoEvent_e event, mangoHttpClient_t* hc){
 				/* CHUNKED HTTP response */
 				
 				/*
-				* TODO: verify it is indeed a chunk encoding..
+				* TODO: verify it is indeed chunked encoding..
 				*/
 				
 				MANGO_DBG(MANGO_DBG_LEVEL_SM, ("This is a CHUNKED RESPONSE!\r\n") );
@@ -546,7 +529,7 @@ void mangoSM__HTTP_RECVING_HEADERS(mangoEvent_e event, mangoHttpClient_t* hc){
 			*/
 			
 			/* 
-			* Special case: Shoutcast [200 responses have no content-length] 
+			* Special case: Shoutcast [ICY 200 responses have no content-length] 
 			*/
 			if(hc->httpResponseStatusCode == MANGO_ERR_HTTP_200 && memcmp(MANGO_WB_PTR(hc), "ICY ", 4) == 0){
 				hc->inputDataProcessor = mangoIDP_raw;
@@ -905,8 +888,6 @@ void mangoSM__WS_POLLING(mangoEvent_e event, mangoHttpClient_t* hc){
                 hc->workingBufferIndexLeft += processed;
                 mangoWB_shrink(hc);
                 
-                //sleep(2);
-                //mangoWS_ping(hc);
                 /* 
                 * We are going to move to the READ state only if: 
                 * [1] The WB is empty. In this case we certainly have to read new data [else completed would be 1].
@@ -1062,7 +1043,6 @@ void mangoWB_shrink(mangoHttpClient_t* hc){
             
             while(hc->workingBufferIndexLeft < hc->workingBufferIndexRight){
                 hc->workingBuffer[index++] = hc->workingBuffer[hc->workingBufferIndexLeft++];
-                //MANGO_DBG("%u = %u\r\n", index, hc->workingBufferIndexLeft);
             };
             
             hc->workingBufferIndexLeft  = 0;

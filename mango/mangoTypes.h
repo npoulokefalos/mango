@@ -230,10 +230,8 @@ struct mangoHttpClient_t{
     uint32_t                smTimeout;
 	uint32_t				smEventTimeout;
 
-	mangoEvent_e			smAPICall;
 	void*					smAPICallArgs;
-	
-	
+
 	uint32_t				smEntryTimestamp;
     mangoEvent_e            subscribedEvent;
 	void 					(*curState)(mangoEvent_e event, mangoHttpClient_t* hc);
