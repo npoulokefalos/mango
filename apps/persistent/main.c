@@ -36,6 +36,7 @@
 #define SERVER_IP           "198.252.206.140"
 #define SERVER_HOSTNAME     "stackoverflow.com"
 #define SERVER_PORT         80
+#define RESOURCE_URL        "/post.php"
 
 
 mangoErr_t mangoApp_handler(mangoArg_t* mangoArgs, void* userArgs){
@@ -145,7 +146,7 @@ mangoErr_t httpHead(mangoHttpClient_t* httpClient){
     * http://httpbin.org/ allows to test GET requests which return CHUNKED data
 	* in reponse..
     */
-    err = mango_httpRequestNew(httpClient, "/",  MANGO_HTTP_METHOD_HEAD);
+    err = mango_httpRequestNew(httpClient, RESOURCE_URL,  MANGO_HTTP_METHOD_HEAD);
     if(err != MANGO_OK){ return MANGO_ERR; }
     
     /*
@@ -189,7 +190,7 @@ mangoErr_t httpGet(mangoHttpClient_t* httpClient){
     * http://httpbin.org/ allows to test GET requests which return CHUNKED data
 	* in reponse..
     */
-    err = mango_httpRequestNew(httpClient, "/",  MANGO_HTTP_METHOD_GET);
+    err = mango_httpRequestNew(httpClient, RESOURCE_URL,  MANGO_HTTP_METHOD_GET);
     if(err != MANGO_OK){ return MANGO_ERR; }
     
     /*
@@ -209,7 +210,7 @@ mangoErr_t httpGet(mangoHttpClient_t* httpClient){
     /*
     * Send the HTTP request and receive the response
     */
-    err = mango_httpRequestProcess(httpClient, mangoAPP_handler, NULL);
+    err = mango_httpRequestProcess(httpClient, mangoApp_handler, NULL);
     if(err >= MANGO_ERR_HTTP_100 && err <= MANGO_ERR_HTTP_599){
 		/*
 		* A valid HTTP response was received.

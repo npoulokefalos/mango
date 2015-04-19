@@ -37,7 +37,7 @@
 #define SERVER_IP           "194.232.200.156"
 #define SERVER_HOSTNAME     "194.232.200.156:8000"
 #define SERVER_PORT         8000
-
+#define RESOURCE_URL        "/;?icy=http"
 
 mangoErr_t mangoApp_handler(mangoArg_t* mangoArgs, void* userArgs){
 	mangoErr_t err;
@@ -146,8 +146,8 @@ mangoErr_t httpGet(mangoHttpClient_t* httpClient){
     /*
     * Select if a GET or HEAD request will be sent
     */
-    err = mango_httpRequestNew(httpClient, "/;?icy=http",  MANGO_HTTP_METHOD_GET);
-    //err = mango_httpRequestNew(httpClient, "/",  MANGO_HTTP_METHOD_HEAD);
+    err = mango_httpRequestNew(httpClient, RESOURCE_URL,  MANGO_HTTP_METHOD_GET);
+    //err = mango_httpRequestNew(httpClient, RESOURCE_URL,  MANGO_HTTP_METHOD_HEAD);
     if(err != MANGO_OK){ return MANGO_ERR; }
     
 	/*

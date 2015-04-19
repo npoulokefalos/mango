@@ -40,6 +40,7 @@
 #define SERVER_IP           "67.205.27.203"
 #define SERVER_HOSTNAME     "posttestserver.com"
 #define SERVER_PORT         80
+#define RESOURCE_URL        "/post.php"
 
 /*
 * Defines the size of the virtual file to be posted
@@ -169,7 +170,7 @@ mangoErr_t httpPost(mangoHttpClient_t* httpClient){
     
     (void) fileSz;
     
-    err = mango_httpRequestNew(httpClient, "/post.php",  MANGO_HTTP_METHOD_POST);
+    err = mango_httpRequestNew(httpClient, RESOURCE_URL,  MANGO_HTTP_METHOD_POST);
     if(err != MANGO_OK){ return MANGO_ERR; }
     
     /*

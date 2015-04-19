@@ -25,17 +25,39 @@
 
 #define PRINTF              printf
 
-
-
-
 /*
-* This example demonstrates HTTP GET requests.
-* 
-* The target URL is the home page of stackoverflow (http://stackoverflow.com/)
+* Define this if you want to test chunked-encoded resource
 */
-#define SERVER_IP           "198.252.206.140"
-#define SERVER_HOSTNAME     "stackoverflow.com"
-#define SERVER_PORT         80
+//#define CHUNKED_GET
+
+
+#ifdef CHUNKED_GET
+    /*
+    * This example demonstrates HTTP GET requests where the HTTP body 
+    * is encoded with chunkes. When mango detects the chuned encoding
+    * it will strip the chunk metadata providing to the application
+    * only the actual data. This is done automatically so chunked GET
+    * does not require any special configuration compared to normal GET.
+    * 
+    * The target URL is an image hosted in http://www.httpwatch.com
+    * (http://www.httpwatch.com/httpgallery/chunked/)
+    */
+    #define SERVER_IP           "191.236.16.125"
+    #define SERVER_HOSTNAME     "www.httpwatch.com"
+    #define SERVER_PORT         80
+    #define RESOURCE_URL        "/httpgallery/chunked/chunkedimage.aspx?0.020209475534940458" 
+#else
+    /*
+    * This example demonstrates non-chunked HTTP GET requests.
+    * 
+    * The target URL is the home page of stackoverflow (http://stackoverflow.com/)
+    */
+    #define SERVER_IP           "198.252.206.140"
+    #define SERVER_HOSTNAME     "stackoverflow.com"
+    #define SERVER_PORT         80
+    #define RESOURCE_URL        "/" 
+#endif
+
 
 
 mangoErr_t mangoApp_handler(mangoArg_t* mangoArgs, void* userArgs){
@@ -91,7 +113,11 @@ mangoErr_t mangoApp_handler(mangoArg_t* mangoArgs, void* userArgs){
 			PRINTF("-----------------------------------------------------------------\r\n");
 			PRINTF("HTTP DATA RECEIVED: [%u bytes]\r\n", mangoArgs->buflen);
 			PRINTF("-----------------------------------------------------------------\r\n");
+#ifdef CHUNKED_GET
+            /* Don't print binary data */
+#else
 			PRINTF("%s\r\n", mangoArgs->buf);
+#endif
 			PRINTF("-----------------------------------------------------------------\r\n");
 			
             break;
@@ -145,8 +171,8 @@ mangoErr_t httpGet(mangoHttpClient_t* httpClient){
     /*
     * Select if a GET or HEAD request will be sent
     */
-    err = mango_httpRequestNew(httpClient, "/",  MANGO_HTTP_METHOD_GET);
-    //err = mango_httpRequestNew(httpClient, "/",  MANGO_HTTP_METHOD_HEAD);
+    err = mango_httpRequestNew(httpClient, RESOURCE_URL,  MANGO_HTTP_METHOD_GET);
+    //err = mango_httpRequestNew(httpClient, RESOURCE_URL,  MANGO_HTTP_METHOD_HEAD);
     if(err != MANGO_OK){ return MANGO_ERR; }
     
 	/*
