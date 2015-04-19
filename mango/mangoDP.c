@@ -32,7 +32,7 @@ mangoErr_t mangoIDP_raw(mangoHttpClient_t* hc, uint8_t* buf, uint16_t buflen, vo
     mangoErr_t err;
 	uint8_t oldByte;
     
-	MANGO_DBG(MANGO_DBG_LEVEL_DP, ("mangoIDP_raw() %u bytes...............\r\n", buflen) );
+	MANGO_DBG(MANGO_DBG_LEVEL_DP, ("IDP [HTTP, RAW] %u bytes\r\n", buflen) );
     
     *completed = 0;
     *processed = 0;
@@ -121,6 +121,8 @@ mangoErr_t mangoIDP_chunked(mangoHttpClient_t* hc, uint8_t* buf, uint16_t buflen
     
     *completed = 0;
     *processed = 0;
+    
+    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("IDP [HTTP, CHUNKED] %u bytes\r\n", buflen) );
     
 #define RETURN()						if(*completed){return MANGO_OK;}else{if(*processed){return MANGO_OK;}else{return MANGO_ERR_MOREDATANEEDED;}}
 #define MOVETO(newState, processSz)		args->state = (newState); *processed += (processSz); buf += (processSz); buflen -= (processSz); break;	
@@ -258,7 +260,7 @@ mangoErr_t mangoODP_raw(mangoHttpClient_t* hc, uint8_t* buf, uint16_t buflen, vo
     mangoODPArgsRaw_t* args = (mangoODPArgsRaw_t*) vargs;
     int retval;
 	
-    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("ODP DATA %u bytes:\r\n[%s]\r\n", buflen, buf) );
+    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("ODP [HTTP, RAW] %u bytes:\r\n", buflen) );
     
     *completed = 0;
     *processed = 0;
@@ -308,7 +310,7 @@ mangoErr_t mangoODP_chunked(mangoHttpClient_t* hc, uint8_t* buf, uint16_t buflen
 	int sent;
     int retval;
     
-    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("CHUNKED HTTP ODP DATA %u bytes:\r\n[%s]\r\n", buflen, buf) );
+    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("ODP [HTTP, CHUNKED] %u bytes\r\n", buflen) );
     
     *completed = 0;
 	*processed = 0;
@@ -391,7 +393,7 @@ mangoErr_t mangoODP_websocket(mangoHttpClient_t* hc, uint8_t* buf, uint16_t bufl
     mangoErr_t err;
 	
     
-    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("ODP DATA %u bytes:\r\n[%s]\r\n", buflen, buf) );
+    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("ODP [WEBSOCKET] %u bytes:\r\n", buflen) );
     
     *completed = 0;
     *processed = 0;
@@ -416,7 +418,7 @@ mangoErr_t mangoIDP_websocket(mangoHttpClient_t* hc, uint8_t* buf, uint16_t bufl
     mangoArg_t funcArgs;
     uint8_t oldByte;
     
-    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("IDP WEBSOCKET %u bytes:\r\n[%s]\r\n", buflen, buf) );
+    MANGO_DBG(MANGO_DBG_LEVEL_DP, ("IDP [WEBSOCKET] %u bytes:\r\n", buflen) );
     
     *processed = 0;
     *completed = 0;
@@ -447,7 +449,7 @@ mangoErr_t mangoIDP_websocket(mangoHttpClient_t* hc, uint8_t* buf, uint16_t bufl
 				
 				if(FRAME_MASK){
 					/* Masked frame from server! Not allowed */
-					MANGO_DBG(MANGO_DBG_LEVEL_DP, ("!!!!!!!!!!!!!!!!!!! abort due to masking!\r\n") );
+					MANGO_DBG(MANGO_DBG_LEVEL_DP, ("!!!!!! Masked frame received, aborting..\r\n") );
 					return MANGO_ERR_DATAPROCESSING;
 				}
 				
@@ -471,7 +473,7 @@ mangoErr_t mangoIDP_websocket(mangoHttpClient_t* hc, uint8_t* buf, uint16_t bufl
 					}else{
 						if(buf[2] | buf[3] | buf[4] | buf[5]){
 							/* Huge frame */
-							MANGO_DBG(MANGO_DBG_LEVEL_DP, ("!!!!!!!!!!!!!!!!!!! abort due to huge!\r\n") );
+							MANGO_DBG(MANGO_DBG_LEVEL_DP, ("!!!!!! HUGE frame received, aborting..\r\n") );
 							return MANGO_ERR_DATAPROCESSING;
 						}else{
 							args->frameSz = (buf[6] << 24) | (buf[7] << 16) | (buf[8] << 8) | buf[9];
@@ -486,7 +488,7 @@ mangoErr_t mangoIDP_websocket(mangoHttpClient_t* hc, uint8_t* buf, uint16_t bufl
             }
             case 2:
             {
-                MANGO_DBG(MANGO_DBG_LEVEL_DP, ("[CASE 3] buf '%s', len %u\r\n", buf, buflen) );
+                MANGO_DBG(MANGO_DBG_LEVEL_DP, ("[CASE 2] buf '%s', len %u\r\n", buf, buflen) );
 				
 				if(args->frameSz <= MANGO_WB_TOT_SZ(hc)){
 					/* We are able to buffer the whole frame */
@@ -527,7 +529,7 @@ mangoErr_t mangoIDP_websocket(mangoHttpClient_t* hc, uint8_t* buf, uint16_t bufl
                         default:
                         {
                             /* Not supported control frame received */
-                            MANGO_DBG(MANGO_DBG_LEVEL_DP, ("Unknown control frame received: %d\r\n", FRAME_OPCODE) );
+                            MANGO_DBG(MANGO_DBG_LEVEL_DP, ("!!!!!! Unknown control frame received: %d, aborting..\r\n", FRAME_OPCODE) );
                             return MANGO_ERR_DATAPROCESSING;
                         };
                     };
