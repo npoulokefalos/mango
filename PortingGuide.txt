@@ -8,9 +8,8 @@ and the underlying operating system. Porting mango to new architectures requires
 file by implementing the defined functions. Proper implementation of the porting layer is critical and 
 assures that mango will work as expected.
 
-User should also adjust the configuration settings located into mangoConfig.h according to the needs
-of the system. Options like MANGO_WORKING_BUFFER_SZ (defines the size of the working buffer that mango
-is going to allocate and use per request), MANGO_PRINTF (the printing function of the system) and other 
-settings are located there.
+To adjust the available configuration settings check mangoConfig.h. Options like MANGO_WORKING_BUFFER_SZ 
+(defines the size of the working buffer that mango is going to allocate and use per request), MANGO_PRINTF
+(the printing function of the system), HTTP timeout values and other settings are located there.
 
-Finally, to enable/disable the available debugging levels, check mangoDebug.h
+To enable/disable the available debugging levels check mangoDebug.h
