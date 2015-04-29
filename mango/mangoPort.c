@@ -23,56 +23,88 @@
 
 #include "mango.h"
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#ifdef MANGO_IP_ENV__UNIX
+    #include <stdint.h>
+    #include <stdlib.h>
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h> 
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <unistd.h>
+    #include <string.h>
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <netdb.h> 
 
-#include <sys/time.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
+    #include <sys/time.h>
+    #include <sys/stat.h>
+    #include <fcntl.h>
+    #include <errno.h>
+#endif
+
+#ifdef MANGO_IP_ENV__LWIP
+    #include "lwip/sockets.h"
+#endif
+
 
 /**
  * @brief   Get the current timestamp in miliseconds
  */
 uint32_t mangoPort_timeNow(){
+    
+#ifdef MANGO_OS_ENV__UNIX
     struct timeval  tv;
 	gettimeofday(&tv, NULL);
 
     return  (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
+#endif
+    
+#ifdef MANGO_OS_ENV__CHIBIOS
+    return chTimeNow();
+#endif
 }
 
 /**
  * @brief   Sleep for the specified number of miliseconds
  */
 void mangoPort_sleep(uint32_t ms){
+#ifdef MANGO_OS_ENV__UNIX
     usleep(ms * 1000);
+#endif
+    
+#ifdef MANGO_OS_ENV__CHIBIOS
+    chThdSleepMilliseconds(ms);
+#endif
 }
 
 /**
  * @brief   Alocate "sz" bytes from heap
  */
 void* mangoPort_malloc(uint32_t sz){
+#ifdef MANGO_OS_ENV__UNIX
     return malloc(sz);
+#endif
+    
+#ifdef MANGO_OS_ENV__CHIBIOS
+    return chHeapAlloc(NULL, sz);
+#endif
 }
 
 /**
  * @brief   Free the specific memory block
  */
 void mangoPort_free(void* ptr){
+#ifdef MANGO_OS_ENV__UNIX
     free(ptr);
+#endif
+    
+#ifdef MANGO_OS_ENV__CHIBIOS
+    chHeapFree(ptr);
+#endif
 }
 
 
@@ -91,7 +123,6 @@ int mangoPort_read(int socketfd, uint8_t* data, uint16_t datalen, uint32_t timeo
     uint32_t received;
     uint32_t start;
     int socketerror;
-    //socklen_t socketerrorlen;
     int retval;
 	
     MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("Trying to read %u bytes\r\n", datalen) );
@@ -105,7 +136,15 @@ int mangoPort_read(int socketfd, uint8_t* data, uint16_t datalen, uint32_t timeo
         if(retval < 0){
             //socketerrorlen = sizeof(socketerror);
             //retval = getsockopt(socketfd, SOL_SOCKET, SO_ERROR, &socketerror, (socklen_t *) &socketerrorlen);
+#ifdef MANGO_IP_ENV__UNIX
             socketerror = errno;
+#endif
+            
+#ifdef MANGO_IP_ENV__LWIP
+            socklen_t socketerrorlen;
+            socketerrorlen = sizeof(socketerror);
+            retval = getsockopt(socketfd, SOL_SOCKET, SO_ERROR, &socketerror, (socklen_t *) &socketerrorlen);
+#endif
             
             MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("!!!!!!! READ SOCKET ERROR %d\r\n", socketerror) );
             
@@ -147,7 +186,6 @@ int mangoPort_write(int socketfd, uint8_t* data, uint16_t datalen, uint32_t time
     uint32_t sent;
     uint32_t start;
     int socketerror;
-    //socklen_t socketerrorlen;
     int retval;
     
 	MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("Trying to write %u bytes\r\n", datalen) );
@@ -159,7 +197,15 @@ int mangoPort_write(int socketfd, uint8_t* data, uint16_t datalen, uint32_t time
         if(retval < 0){
             //socketerrorlen = sizeof(socketerror);
             //retval = getsockopt(socketfd, SOL_SOCKET, SO_ERROR, &socketerror, (socklen_t *) &socketerrorlen);
+#ifdef MANGO_IP_ENV__UNIX
             socketerror = errno;
+#endif
+            
+#ifdef MANGO_IP_ENV__LWIP
+            socklen_t socketerrorlen;
+            socketerrorlen = sizeof(socketerror);
+            retval = getsockopt(socketfd, SOL_SOCKET, SO_ERROR, &socketerror, (socklen_t *) &socketerrorlen);
+#endif
             
             MANGO_DBG(MANGO_DBG_LEVEL_PORT, ("!!!!!!! WRITE SOCKET ERROR %d\r\n", socketerror) );
             

@@ -10,6 +10,10 @@ assures that mango will work as expected.
 
 To adjust the available configuration settings check mangoConfig.h. Options like MANGO_WORKING_BUFFER_SZ 
 (defines the size of the working buffer that mango is going to allocate and use per request), MANGO_PRINTF
-(the printing function of the system), HTTP timeout values and other settings are located there.
+(the printing function of the system), HTTP timeout values and other settings are located there. 
+
+- For Unix operation define MANGO_OS_ENV__UNIX & MANGO_IP_ENV__UNIX.
+- For ChibiOS/LwIP operation define MANGO_OS_ENV__CHIBIOS & MANGO_IP_ENV__LWIP.
+
 
 To enable/disable the available debugging levels check mangoDebug.h

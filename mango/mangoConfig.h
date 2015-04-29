@@ -79,11 +79,12 @@
 * Define the OS enviroment
 */
 #define MANGO_OS_ENV__UNIX
+//#define MANGO_OS_ENV__CHIBIOS
 
 /*
 * Define the IP enviroment
 */
 #define MANGO_IP_ENV__UNIX
-#define MANGO_IP_ENV__LWIP
+//#define MANGO_IP_ENV__LWIP
 
 #endif
